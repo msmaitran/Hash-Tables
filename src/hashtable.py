@@ -54,7 +54,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        current_index = self.storage[self._hash_mod(key)]
+        if current_index == None:
+            self.storage[self._hash_mod(key)] = LinkedPair(key, value)
+        else:
+            while current_index.next is not None:
+                if current_index.key == key:
+                    current_index.value = value
+                    return
+                current_index = current_index.next
+            if current_index.key == key:
+                current_index.value = value
+            else:
+                current_index.next = LinkedPair(key, value)
 
 
 
@@ -66,7 +78,16 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        current_index = self.storage[self._hash_mod(key)]
+        if current_index is not None:
+            if current_index.key == key:
+                self.storage[self._hash_mod(key)] = current_index.next
+                return
+            while current_index.next is not None:
+                current_index = current_index.next
+                if current_index.key == key:
+                    self.storage[self._hash_mod(key)] = current_index.next
+                    return
 
 
     def retrieve(self, key):
@@ -77,7 +98,14 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        current_index = self.storage[self._hash_mod(key)]
+        if current_index is not None:
+            if current_index.key == key:
+                return current_index.value
+            while current_index.next is not None:
+                current_index = current_index.next
+                if current_index.key == key:
+                    return current_index.value
 
 
     def resize(self):
@@ -87,7 +115,19 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        temporary = copy = self.storage
+        self.storage = [None] * len(range(len(temporary))) * 2
+        self.capacity = len(self.storage)
+
+        counter = 0
+        while counter < len(temporary):
+            current_index = temporary[counter]
+            if current_index is not None:
+                self.insert(current_index.key, current_index.value)
+                while current_index.next is not None:
+                    self.insert(current_index.next.key, current_index.next.value)
+                    current_index = current_index.next
+            counter += 1
 
 
 
